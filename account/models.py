@@ -37,8 +37,9 @@ class Role(BaseModel):
 
 class Permission(BaseModel):
     """Model for permissions available to a role"""
-    kind = models.CharField(max_length=10)
-    role_id = models.ForeignKey(
+    name = models.CharField(max_length=50)
+    codename = models.CharField(max_length=20)
+    role = models.ForeignKey(
         Role,
         related_name="permissions",
         on_delete=models.SET_NULL,
