@@ -13,7 +13,7 @@ class User(AbstractBaseUser, BaseModel):
 
     username = models.CharField(max_length=150, unique=True)
     password = models.CharField(max_length=100)
-    role_id = models.OneToOneField(
+    role = models.OneToOneField(
         'Role',
         on_delete=models.SET_NULL,
         related_name="user",
@@ -27,6 +27,7 @@ class User(AbstractBaseUser, BaseModel):
 class Role(BaseModel):
     """Model for a user role"""
     type = models.CharField(max_length=10)
+    permissions = models.ManyToManyField('Permission', related_name="roles")
 
     class Meta:
         ordering = ('type',)
@@ -39,9 +40,3 @@ class Permission(BaseModel):
     """Model for permissions available to a role"""
     name = models.CharField(max_length=50)
     codename = models.CharField(max_length=20)
-    role = models.ForeignKey(
-        Role,
-        related_name="permissions",
-        on_delete=models.SET_NULL,
-        null=True,
-        )
