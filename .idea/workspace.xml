@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="74dbe50f-531c-4209-8e06-ceebf0265091" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/olumideogundele.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/olumideogundele.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticket/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/ticket/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticket/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/ticket/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tickettracker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/tickettracker/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +35,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />

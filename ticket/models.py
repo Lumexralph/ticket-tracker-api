@@ -23,7 +23,12 @@ class Ticket(BaseModel):
         """Class Meta to add more information for the ticket model"""
         ordering = ('type',)
 
-    creator = models.ForeignKey(User, related_name='tickets', on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        User,
+        related_name='tickets',
+        on_delete=models.CASCADE,
+        null=True,
+    )
     assigned_to = models.ForeignKey(
         User,
         related_name='assigned_tickets',
@@ -38,6 +43,6 @@ class Ticket(BaseModel):
         choices=TICKET_TYPES,
         default=ENHANCEMENT,
     )
-    complexity = models.IntegerField(validators=[MinLengthValidator(0), MaxLengthValidator(5)])
-    estimated = models.IntegerField(validators=[MinLengthValidator(0)])
+    complexity = models.IntegerField()
+    estimated = models.IntegerField()
 
