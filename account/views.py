@@ -27,7 +27,13 @@ class UserRegistration(mixins.CreateModelMixin,
         }
         token = generate_token(payload)
         headers['Authorization'] = token
-        return Response(data.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        data = {
+            'data': data.data,
+            'message': 'signup successfully'
+        }
+
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -55,38 +61,15 @@ class UserLogin(mixins.CreateModelMixin,
                 'id': data.data['id'],
                 'role': data.data['role']
             }
-
             token = generate_token(payload)
             headers['Authorization'] = token
-            return Response(data.data, status=status.HTTP_200_OK, headers=headers)
+
+            data = {
+                'data': data.data,
+                'message': 'login successfully'
+            }
+            return Response(data, status=status.HTTP_200_OK, headers=headers)
         else:
             return Response({
                 'error': 'Invalid login credentials'
             }, status=status.HTTP_401_UNAUTHORIZED, headers=headers)
-
-
-# class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-#
-#     @token_required
-#     def get(self, request, *args, **kwargs):
-#         return self.retrieve(request, *args, **kwargs)
-#
-#     @token_required
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
-#
-#     def update(self, request, *args, **kwargs):
-#         partial = kwargs.pop('partial', False)
-#         instance = self.get_object()
-#         serializer = self.get_serializer(instance, data=request.data, partial=partial)
-#         serializer.is_valid(raise_exception=True)
-#
-#         serializer.save()
-#
-#         return Response(serializer.data)
-#
-#     @token_required
-#     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)

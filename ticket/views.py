@@ -1,7 +1,6 @@
 """Module containing the ticket views"""
 from rest_framework import generics, mixins, status
 from rest_framework.response import Response
-from django.forms import model_to_dict
 
 from ticket.serializers import TicketSerializer
 from ticket.models import Ticket
@@ -30,8 +29,6 @@ class CreateTicket(mixins.CreateModelMixin,
         role = request.user['data']['user_info']['role']['type']
         username = request.user['data']['user_info']['username']
         if role == 'user':
-            # import pdb
-            # pdb.set_trace()
             creator = User.objects.filter(username=username).first()
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -72,27 +69,26 @@ class AssignTicketToAdmin(generics.UpdateAPIView):
             }, status=status.HTTP_403_FORBIDDEN)
 
         # fetch the ticket
-        request_ticket = Ticket.objects.filter(pk=ticket_id).first()
-        if not request_ticket:
+        ticket = Ticket.objects.filter(pk=ticket_id).first()
+        if not ticket:
             return Response({
                 'error': 'Could not find the ticket'
             }, status=status.HTTP_404_NOT_FOUND)
 
-        if request_ticket.creator.id != current_user['id']:
+        if ticket.creator.id != current_user['id']:
             return Response({
                 'error': 'Cannot assign a ticket you didn\'t create.'
             }, status=status.HTTP_403_FORBIDDEN)
 
-        request_ticket.assigned_to = request_admin
-        request_ticket.save()
+        ticket.assigned_to = request_admin
+        ticket.save()
+        serializer = TicketSerializer(ticket)
+        data = {
+            'data': serializer.data,
+            'message': 'ticket assigned to admin successfully',
+        }
 
-        #  assign the ticket to that admin
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class ListTicket(mixins.ListModelMixin,
@@ -106,13 +102,84 @@ class ListTicket(mixins.ListModelMixin,
         for the currently authenticated user.
         """
         current_user = self.request.user['data']['user_info']
-        # import pdb
-        # pdb.set_trace()
+
         if current_user['role']['type'] == 'user':
-            return Ticket.objects.filter(creator__username=current_user['username'])
+            return Ticket.objects.filter(creator__username=current_user['username'], deleted=False)
         elif current_user['role']['type'] == 'admin':
-            return Ticket.objects.filter(assigned_to__username=current_user['username'])
+            return Ticket.objects.filter(assigned_to__username=current_user['username'], deleted=False)
 
     @token_required
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+class RejectTicket(generics.UpdateAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    @token_required
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        ticket_id = kwargs.get('ticket_id')
+        current_user = request.user['data']['user_info']
+
+        if current_user['role']['type'] != 'admin':
+            return Response({
+                'error': 'Only an admin can reject a ticket.'
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # fetch the ticket
+        ticket = Ticket.objects.filter(pk=ticket_id).first()
+        if not ticket:
+            return Response({
+                'error': 'Could not find the ticket'
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        ticket.deleted = True
+        ticket.save()
+
+        serializer = TicketSerializer(ticket)
+        data = {
+            'data': serializer.data,
+            'message': 'ticket rejected successfully',
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class AcceptTicket(generics.UpdateAPIView):
+    # TODO: refactor accept accept and reject view to DRY
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    @token_required
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        ticket_id = kwargs.get('ticket_id')
+        current_user = request.user['data']['user_info']
+
+        if current_user['role']['type'] != 'admin':
+            return Response({
+                'error': 'Only an admin can reject a ticket.'
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # fetch the ticket
+        ticket = Ticket.objects.filter(pk=ticket_id).first()
+        if not ticket:
+            return Response({
+                'error': 'Could not find the ticket'
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        ticket.activated = True
+        ticket.save()
+        serializer = TicketSerializer(ticket)
+        data = {
+            'data': serializer.data,
+            'message': 'ticket accepted successfully',
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
