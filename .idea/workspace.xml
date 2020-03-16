@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="74dbe50f-531c-4209-8e06-ceebf0265091" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ticket/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/ticket/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticket/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/ticket/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ticket/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/ticket/views.py" afterDir="false" />
     </list>

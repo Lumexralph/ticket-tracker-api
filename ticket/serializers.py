@@ -13,6 +13,4 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         """Class to add additional information to the serializer"""
         model = Ticket
-        # fields = ['id', 'creator', 'assigned_to', 'activated', 'summary', 'description','type', 'complexity',
-        # 'estimated', 'created_at', 'updated_at', 'deleted_at', 'flight']
         fields = '__all__'

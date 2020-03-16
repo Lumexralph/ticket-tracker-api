@@ -93,3 +93,26 @@ class AssignTicketToAdmin(generics.UpdateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListTicket(mixins.ListModelMixin,
+                 generics.GenericAPIView):
+    """View for listing all tickets"""
+    serializer_class = TicketSerializer
+
+    def get_queryset(self):
+        """
+        This should return a list of all the tickets
+        for the currently authenticated user.
+        """
+        current_user = self.request.user['data']['user_info']
+        # import pdb
+        # pdb.set_trace()
+        if current_user['role']['type'] == 'user':
+            return Ticket.objects.filter(creator__username=current_user['username'])
+        elif current_user['role']['type'] == 'admin':
+            return Ticket.objects.filter(assigned_to__username=current_user['username'])
+
+    @token_required
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
